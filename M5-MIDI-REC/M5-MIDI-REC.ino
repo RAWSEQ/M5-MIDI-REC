@@ -4,6 +4,7 @@
 #include "m5mr.h"
 
 #define NOTE_MAX 4000
+#define REC_PLAY_LATENCY 15000
 
 M5GFX display;
 M5Canvas c_cons(&display);
@@ -133,7 +134,7 @@ void loop()
         stop_notes();
         break;
       }
-      if (notes_time[cur_note] <= get_current_time() + 300)
+      if (notes_time[cur_note] <= get_current_time() + REC_PLAY_LATENCY)
       {
         if (notes[cur_note][0] == 0)
         {
