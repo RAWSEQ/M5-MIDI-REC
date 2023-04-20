@@ -4,11 +4,25 @@
 #include "m5mr.h"
 
 #define NOTE_MAX 4000
-#define REC_PLAY_LATENCY 15000
-
+#define REC_PLAY_LATENCY 65000
 M5GFX display;
 M5Canvas c_cons(&display);
 M5Canvas c_time(&display);
+void setTime();
+void updateConsole(void *arg);
+void play_notes();
+void stop_notes();
+void rec_start();
+unsigned long get_current_time();
+void event_btn_play(Event &e);
+void event_btn_wait(Event &e);
+void event_btn_rec(Event &e);
+void event_ch_btn(Event &e);
+void onConnected();
+void onDisconnected();
+void onNoteOn(uint8_t channel, uint8_t note, uint8_t velocity, uint16_t timestamp);
+void onNoteOff(uint8_t channel, uint8_t note, uint8_t velocity, uint16_t timestamp);
+
 ButtonColors cl_on = {0x7BEF, WHITE, WHITE};
 ButtonColors cl_off = {BLACK, 0xC618, 0xC618};
 ButtonColors cl_rec = {RED, 0xC618, 0xC618};
@@ -19,6 +33,10 @@ ButtonColors cl_bl = {0x7BEF, 0xC618, 0xC618};
 Button btn_rec(180, 8, 65, 35, false, "REC", cl_off, cl_on);
 Button btn_play(250, 8, 65, 35, false, "PLAY", cl_off, cl_on);
 Button btn_wait(250, 53, 65, 35, false, "WAIT", cl_off, cl_on);
+
+// Button btn_rec(250, 5, 65, 45, false ,"REC", cl_off, cl_on);
+// Button btn_play(250, 53, 65, 45, false ,"PLAY", cl_off, cl_on);
+// Button btn_wait(180, 17, 65, 35, false ,"WAIT", cl_off, cl_on);
 
 Button btn_ch01(192, 105, 30, 30, false, "1", cl_off, cl_on);
 Button btn_ch02(224, 105, 30, 30, false, "2", cl_off, cl_on);
@@ -39,13 +57,13 @@ Button btn_ch16(288, 201, 30, 30, false, "16", cl_off, cl_on);
 
 bool is_active = false;
 bool is_wait = false;
-int s_mode = 0; // 0: Standby, 1: Play, 2: Rec, 3: Play_wait, 4: Rec_wait
+int s_mode = 0; // 0: standby, 1: play, 2: rec, 3: play_wait, 4: rec_wait
 int p_mode = 0;
 unsigned long st = 0;
 unsigned long ct = 0;
 bool ch_st[16] = {false};
 unsigned long notes_time[NOTE_MAX];
-short notes[NOTE_MAX][4]; // 0: Method, 1: CH, 2: var1, 3: var2
+short notes[NOTE_MAX][4]; // 0: method, 1: CH, 2: var1, 3: var2
 /*
 [Method]
  0: note on, 1: note off, 3: CC
@@ -60,13 +78,14 @@ void setup()
 
   display.pushImage(0, 5, m5mrWidth, m5mrHeight, m5mr);
 
-  c_cons.setColorDepth(1);
+  c_cons.setColorDepth(1); // mono color
   c_cons.createSprite(190, 140);
   c_cons.setTextSize(1);
   c_cons.setTextScroll(true);
 
   c_time.setColorDepth(1);
   c_time.createSprite(245, 49);
+  // c_time.setFont(&fonts::lgfxJapanGothic_40);
   c_time.setFont(&fonts::Font7);
   c_time.setTextWrap(false);
   c_time.setTextSize(1);
@@ -173,6 +192,7 @@ void updateConsole(void *arg)
   {
     c_time.pushSprite(0, 50);
     c_cons.pushSprite(0, 100);
+    // display.waitDisplay();
     if (p_mode != s_mode)
     {
       if (s_mode == 0)
