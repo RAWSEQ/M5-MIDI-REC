@@ -337,14 +337,14 @@ void onNoteOn(uint8_t channel, uint8_t note, uint8_t velocity, uint16_t timestam
   }
   else if (s_mode == 3)
   {
-    if (note == 0 && velocity < 5)
+    if (note == 0)
     {
       play_notes();
     }
   }
   else if (s_mode == 4)
   {
-    if (note == 0 && velocity < 5)
+    if (note == 0)
     {
       rec_start();
     }

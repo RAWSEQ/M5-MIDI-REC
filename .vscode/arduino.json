@@ -1,0 +1,7 @@
+{
+    "configuration": "PSRAM=enabled,PartitionScheme=default,CPUFreq=240,UploadSpeed=921600,DebugLevel=none",
+    "board": "esp32:esp32:m5stack-core2",
+    "programmer": "esp32:esptool",
+    "port": "COM4",
+    "sketch": "M5-MIDI-REC\\M5-MIDI-REC.ino"
+}
