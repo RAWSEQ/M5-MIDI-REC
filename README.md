@@ -4,6 +4,10 @@ MIDI Signal Recorder for BLE MIDI
 ## Introduction Video:
 https://youtu.be/sTsFlpb6lUc
 
+## Project Page:
+
+https://protopedia.net/prototype/3263
+
 ## Install
 
 ### Setup Firmware to M5 Stack CORE2
