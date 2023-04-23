@@ -8,6 +8,9 @@ https://youtu.be/sTsFlpb6lUc
 
 https://protopedia.net/prototype/3263
 
+日本語はこちら
+https://note.com/rawseq/n/nb8169d09e88a
+
 ## Install
 
 ### Setup Firmware to M5 Stack CORE2
